@@ -29,6 +29,69 @@ func TestHomePageRendersSocialLinks(t *testing.T) {
 	}
 }
 
+func TestHomePageRendersTeamInProjectOrder(t *testing.T) {
+	rec := renderHome(t)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", rec.Code, http.StatusOK)
+	}
+
+	body := rec.Body.String()
+	previous := -1
+	for _, member := range []struct {
+		name  string
+		image string
+	}{
+		{name: "Walid Husein", image: "walid-husein.jpg"},
+		{name: "Gianluca Danaro", image: "gianluca-danaro.jpg"},
+		{name: "Lorenzo Magalotti", image: "lorenzo-magalotti.jpg"},
+		{name: "Supernova Collective", image: "supernova-collective.jpg"},
+		{name: "Lorenzo Morelli", image: "lorenzo-morelli.jpg"},
+		{name: "Federica Passi", image: "federica-passi.jpg"},
+		{name: "Denise Venanzetti", image: "denise-venanzetti.jpg"},
+	} {
+		snippet := `src="/static/img/team/` + member.image + `"`
+		position := strings.Index(body, snippet)
+		if position == -1 {
+			t.Errorf("home page does not contain team member %q", member.name)
+			continue
+		}
+		if position < previous {
+			t.Errorf("team member %q appears out of order", member.name)
+		}
+		previous = position
+	}
+}
+
+func TestHomePageRendersSupernovaCollective(t *testing.T) {
+	rec := renderHome(t)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", rec.Code, http.StatusOK)
+	}
+
+	body := strings.Join(strings.Fields(rec.Body.String()), " ")
+	for _, snippet := range []string{
+		`src="/static/img/team/supernova-collective.jpg"`,
+		`Post-produzione audio, composizione colonna sonora originale, sound design`,
+		`Giovanni Mennuni, Matteo Mezzabotta e Gianluca Danaro`,
+		`Hanno collaborato con: Radio Deejay (Dungeons&amp;Deejay), RaiPlay, Università RomaTre, InnTale, Sabaku No Maiku/Camilla d’Onofrio, Roberto Recchioni, Mog’s Chronicles.`,
+		`https://www.instagram.com/supernova_collective/`,
+		`https://linktr.ee/SupernovaCollective`,
+		`Ovunque amiate ascoltare i vostri podcast`,
+	} {
+		if !strings.Contains(body, snippet) {
+			t.Errorf("home page does not contain %q", snippet)
+		}
+	}
+	if strings.Contains(body, `Presto ovunque amiate ascoltare i vostri podcast`) {
+		t.Error("home page still describes podcast availability as forthcoming")
+	}
+	if got := strings.Count(body, `https://www.instagram.com/supernova_collective/`); got != 2 {
+		t.Errorf("Supernova Instagram link count = %d, want 2", got)
+	}
+}
+
 func TestHomePageCanOverrideSpotifyLink(t *testing.T) {
 	t.Setenv("SPOTIFY_URL", "https://open.spotify.com/show/example")
 
@@ -161,6 +224,29 @@ func TestOptimizedHeroAssetsAreServed(t *testing.T) {
 		if cacheControl := rec.Header().Get("Cache-Control"); !strings.Contains(cacheControl, "immutable") {
 			t.Errorf("%s Cache-Control = %q, want immutable static cache", path, cacheControl)
 		}
+	}
+}
+
+func TestSupernovaImageIsServed(t *testing.T) {
+	server, err := New()
+	if err != nil {
+		t.Fatalf("New() error = %v", err)
+	}
+
+	path := "/static/img/team/supernova-collective.jpg"
+	req := httptest.NewRequest(http.MethodGet, path, nil)
+	rec := httptest.NewRecorder()
+
+	server.Handler().ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Errorf("%s status = %d, want %d", path, rec.Code, http.StatusOK)
+	}
+	if contentType := rec.Header().Get("Content-Type"); contentType != "image/jpeg" {
+		t.Errorf("%s Content-Type = %q, want image/jpeg", path, contentType)
+	}
+	if cacheControl := rec.Header().Get("Cache-Control"); !strings.Contains(cacheControl, "immutable") {
+		t.Errorf("%s Cache-Control = %q, want immutable static cache", path, cacheControl)
 	}
 }
 
