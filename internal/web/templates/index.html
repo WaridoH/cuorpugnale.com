@@ -3,30 +3,36 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cuorpugnale l'Actual Play Daggerheart</title>
+    <title>Dimora: Age of Umbra | Cuorpugnale</title>
     <meta
       name="description"
-      content="Un podcast actual play di Walid Husein e Gianluca Danaro che usa Daggerheart per raccontare storie epiche."
+      content="Scopri Dimora: Age of Umbra, la prima avventura actual play di Cuorpugnale giocata con Daggerheart."
     />
     <link rel="canonical" href="{{.SiteURL}}/" />
-    <meta property="og:title" content="Cuorpugnale" />
+    <meta property="og:title" content="Dimora: Age of Umbra | Cuorpugnale" />
     <meta
       property="og:description"
-      content="L'actual play come non l'avete mai sentito."
+      content="La prima avventura actual play di Cuorpugnale. Ascolta Dimora: Age of Umbra."
     />
     <meta property="og:image" content="{{.OGImageURL}}" />
-    <meta property="og:image:alt" content="Logo di Cuorpugnale" />
+    <meta
+      property="og:image:alt"
+      content="Il party di Dimora: Age of Umbra davanti alla città nella nebbia"
+    />
     <meta property="og:locale" content="it_IT" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="{{.SiteURL}}/" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Cuorpugnale" />
+    <meta name="twitter:title" content="Dimora: Age of Umbra | Cuorpugnale" />
     <meta
       name="twitter:description"
-      content="L'actual play come non l'avete mai sentito."
+      content="La prima avventura actual play di Cuorpugnale. Ascolta Dimora: Age of Umbra."
     />
     <meta name="twitter:image" content="{{.OGImageURL}}" />
-    <meta name="twitter:image:alt" content="Logo di Cuorpugnale" />
+    <meta
+      name="twitter:image:alt"
+      content="Il party di Dimora: Age of Umbra davanti alla città nella nebbia"
+    />
     <link
       rel="icon"
       type="image/svg+xml"
@@ -35,176 +41,172 @@
     <link
       rel="preload"
       as="image"
-      href="/static/img/cuorpugnale_logotipo-960.avif"
-      imagesrcset="/static/img/cuorpugnale_logotipo-640.avif 640w, /static/img/cuorpugnale_logotipo-960.avif 960w"
-      imagesizes="(max-width: 956px) 92vw, 880px"
+      href="/static/img/campaign/age-of-umbra-1920.avif"
+      imagesrcset="/static/img/campaign/age-of-umbra-960.avif 960w, /static/img/campaign/age-of-umbra-1920.avif 1920w, /static/img/campaign/age-of-umbra-2560.avif 2560w"
+      imagesizes="100vw"
       type="image/avif"
       fetchpriority="high"
     />
-    <link rel="stylesheet" href="/static/css/style.css" />
+    <link rel="stylesheet" href="/static/css/age-of-umbra-v1.css" />
   </head>
   <body>
-    <a class="skip-link" href="#chi-siamo">Vai al contenuto</a>
-    <main class="hero" aria-labelledby="page-title">
-      <div class="hero__overlay"></div>
-      <div class="hero__content">
-        <picture class="hero__brand-picture">
+    <a class="skip-link" href="#contenuto">Vai al contenuto</a>
+    <header class="site-header">
+      <nav class="site-nav" aria-label="Navigazione principale">
+        <a class="site-nav__brand" href="#" aria-label="Cuorpugnale, inizio">
+          <img
+            src="/static/img/cuorpugnale_marchio.svg"
+            alt=""
+            width="48"
+            height="47"
+          />
+          <span>Cuorpugnale</span>
+        </a>
+        <div class="site-nav__links">
+          <a href="#avventura">Avventura</a>
+          <a href="#party">Party</a>
+          <a href="#ascolta">Ascolta</a>
+          <a href="#chi-siamo">Chi siamo</a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="contenuto">
+      <section class="campaign-hero" aria-labelledby="page-title">
+        <picture class="campaign-hero__artwork">
           <source
             type="image/avif"
             srcset="
-              /static/img/cuorpugnale_logotipo-640.avif 640w,
-              /static/img/cuorpugnale_logotipo-960.avif 960w
+              /static/img/campaign/age-of-umbra-960.avif   960w,
+              /static/img/campaign/age-of-umbra-1920.avif 1920w,
+              /static/img/campaign/age-of-umbra-2560.avif 2560w
             "
-            sizes="(max-width: 956px) 92vw, 880px"
-          />
-          <source
-            type="image/webp"
-            srcset="
-              /static/img/cuorpugnale_logotipo-640.webp 640w,
-              /static/img/cuorpugnale_logotipo-960.webp 960w
-            "
-            sizes="(max-width: 956px) 92vw, 880px"
+            sizes="100vw"
           />
           <img
-            class="hero__brand"
-            src="/static/img/cuorpugnale_logotipo-960.jpg"
-            alt="Cuorpugnale"
-            width="960"
-            height="414"
+            src="/static/img/campaign/age-of-umbra-1920.jpg"
+            alt="Il party di Dimora: Age of Umbra davanti alla città nella nebbia"
+            width="1920"
+            height="1080"
             fetchpriority="high"
             decoding="async"
           />
         </picture>
-        <h1 id="page-title" class="visually-hidden">
-          Cuorpugnale - Actual Play
-        </h1>
-        <p class="hero__tagline">
-          Storie di Speranza e Paura
-        </p>
-        <p class="hero__lede">
-          Avventure e musiche originali, narrate e giocate al tavolo utilizzando
-          il sistema del gioco di ruolo
-          <strong>Daggerheart</strong>.
-        </p>
 
-        <div class="hero__cta">
-          {{if .Launched}} {{if .SpotifyEmbed}}
-          <iframe
-            data-testid="embed-iframe"
-            class="hero__spotify"
-            title="Teaser trailer di Cuorpugnale su Spotify"
-            src="{{.SpotifyEmbed}}"
-            width="100%"
-            height="352"
-            frameborder="0"
-            allowfullscreen
-            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-            loading="lazy"
-          ></iframe>
-          {{else}}
-          <a
-            class="btn btn--primary"
-            href="{{.SpotifyURL}}"
-            target="_blank"
-            rel="noopener"
-          >
-            Apri Cuorpugnale su Spotify
-          </a>
-          {{end}} {{else}}
-          <div
-            class="countdown"
-            data-target="{{.LaunchUnixMs}}"
-            aria-label="Tempo rimanente al teaser trailer"
-            aria-live="off"
-            role="timer"
-          >
-            <p class="countdown__label">Il teaser trailer arriva tra</p>
-            <div class="countdown__grid">
-              <div class="countdown__cell">
-                <span class="countdown__num" data-unit="days">--</span
-                ><span class="countdown__unit">giorni</span>
-              </div>
-              <div class="countdown__cell">
-                <span class="countdown__num" data-unit="hours">--</span
-                ><span class="countdown__unit">ore</span>
-              </div>
-              <div class="countdown__cell">
-                <span class="countdown__num" data-unit="minutes">--</span
-                ><span class="countdown__unit">min</span>
-              </div>
-              <div class="countdown__cell">
-                <span class="countdown__num" data-unit="seconds">--</span
-                ><span class="countdown__unit">sec</span>
-              </div>
-            </div>
+        <div class="campaign-hero__intro">
+          <p class="eyebrow">La prima avventura di Cuorpugnale</p>
+          <h1 id="page-title"><span>Dimora</span> Age of Umbra</h1>
+          <p class="campaign-hero__lede">
+            Avventure con musiche originali giocate al tavolo con
+            <strong>Daggerheart</strong>.
+          </p>
+          <div class="campaign-hero__actions">
+            <a class="btn btn--primary" href="#ascolta">Ascolta ora</a>
+            <a class="text-link" href="#avventura">Scopri l'avventura</a>
           </div>
-          <script>
-            (function () {
-              var root = document.querySelector(".countdown");
-              if (!root) return;
-              var target = parseInt(root.dataset.target, 10);
-              var fields = {
-                days: root.querySelector('[data-unit="days"]'),
-                hours: root.querySelector('[data-unit="hours"]'),
-                minutes: root.querySelector('[data-unit="minutes"]'),
-                seconds: root.querySelector('[data-unit="seconds"]'),
-              };
-              function pad(n) {
-                return n < 10 ? "0" + n : "" + n;
-              }
-              function tick() {
-                var diff = target - Date.now();
-                if (diff <= 0) {
-                  location.reload();
-                  return;
-                }
-                var s = Math.floor(diff / 1000);
-                fields.days.textContent = Math.floor(s / 86400);
-                fields.hours.textContent = pad(Math.floor((s % 86400) / 3600));
-                fields.minutes.textContent = pad(Math.floor((s % 3600) / 60));
-                fields.seconds.textContent = pad(s % 60);
-              }
-              tick();
-              setInterval(tick, 1000);
-            })();
-          </script>
-          {{end}}
         </div>
+      </section>
 
-        <nav class="hero__socials" aria-label="Canali social di Cuorpugnale">
-          <a href="{{.YouTubeURL}}" target="_blank" rel="noopener">YouTube</a>
-          <a href="{{.InstagramURL}}" target="_blank" rel="noopener"
-            >Instagram</a
-          >
-        </nav>
+      <section class="listen" id="ascolta" aria-labelledby="listen-title">
+        <div class="listen__intro">
+          <p class="eyebrow">Inizia da qui</p>
+          <h2 id="listen-title">Entra nella Dimora</h2>
+          <p>
+            Ascolta Cuorpugnale su Spotify oppure raggiungici su YouTube.
+          </p>
+          <div class="listen__links" aria-label="Piattaforme di ascolto">
+            <a
+              class="btn btn--primary"
+              href="{{.SpotifyURL}}"
+              target="_blank"
+              rel="noopener"
+              >Apri Spotify</a
+            >
+            <a
+              class="btn btn--outline"
+              href="{{.YouTubeURL}}"
+              target="_blank"
+              rel="noopener"
+              >YouTube</a
+            >
+          </div>
+          <p class="listen__availability">
+            Ovunque amiate ascoltare i vostri podcast
+          </p>
+        </div>
+        <iframe
+          data-testid="embed-iframe"
+          class="listen__spotify"
+          title="Dimora: Age of Umbra su Spotify"
+          src="{{.SpotifyEmbed}}"
+          width="100%"
+          height="352"
+          frameborder="0"
+          allowfullscreen
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy"
+        ></iframe>
+      </section>
 
-        <p class="hero__footer">
-          Ovunque amiate ascoltare i vostri podcast
+      <section class="adventure" id="avventura" aria-labelledby="story-title">
+        <div class="section-heading">
+          <p class="eyebrow">Dimora: Age of Umbra</p>
+          <span class="placeholder-label">Sinossi in arrivo</span>
+          <h2 id="story-title">Una soglia avvolta nell'ombra</h2>
+        </div>
+        <div class="adventure__grid">
+          <article class="story-panel">
+            <h3>Il mondo</h3>
+            <p>
+              Qui troverà spazio la descrizione approvata dell'ambientazione:
+              luoghi, atmosfera e ciò che rende unica la Dimora.
+            </p>
+          </article>
+          <article class="story-panel">
+            <h3>L'avventura</h3>
+            <p>
+              Qui inseriremo la premessa narrativa di Age of Umbra senza
+              anticipare i segreti che attendono il party.
+            </p>
+          </article>
+        </div>
+        <p class="system-note">
+          Un actual play realizzato con Daggerheart. La dicitura legale
+          definitiva verrà inserita insieme alla sinossi approvata.
         </p>
-      </div>
-      <a
-        class="hero__scroll"
-        href="#chi-siamo"
-        aria-label="Scorri verso Chi siamo"
-      >
-        <svg
-          viewBox="0 0 24 24"
-          width="28"
-          height="28"
-          aria-hidden="true"
-          focusable="false"
-        >
-          <path
-            d="M6 9l6 6 6-6"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-      </a>
-    </main>
+      </section>
+
+      <section class="party" id="party" aria-labelledby="party-title">
+        <div class="section-heading section-heading--center">
+          <p class="eyebrow">Tre voci, una storia</p>
+          <span class="placeholder-label">Schede in arrivo</span>
+          <h2 id="party-title">Il party</h2>
+          <p>
+            Le illustrazioni e le biografie definitive sostituiranno questi
+            segnaposto.
+          </p>
+        </div>
+        <div class="party__gallery" aria-label="Galleria dei personaggi">
+          <article class="character-card">
+            <div class="character-card__portrait" aria-hidden="true"></div>
+            <p class="character-card__index">Personaggio 01</p>
+            <h3>Nome in arrivo</h3>
+            <p>Ruolo, tratti e breve biografia del personaggio.</p>
+          </article>
+          <article class="character-card">
+            <div class="character-card__portrait" aria-hidden="true"></div>
+            <p class="character-card__index">Personaggio 02</p>
+            <h3>Nome in arrivo</h3>
+            <p>Ruolo, tratti e breve biografia del personaggio.</p>
+          </article>
+          <article class="character-card">
+            <div class="character-card__portrait" aria-hidden="true"></div>
+            <p class="character-card__index">Personaggio 03</p>
+            <h3>Nome in arrivo</h3>
+            <p>Ruolo, tratti e breve biografia del personaggio.</p>
+          </article>
+        </div>
+      </section>
 
     <section class="about" id="chi-siamo">
       <div class="about__inner">
@@ -447,11 +449,24 @@
         </ul>
       </div>
     </section>
+    </main>
 
     <footer class="site-footer">
-      <p>Un podcast actual play di Walid Husein e Gianluca Danaro</p>
-      <p>
-        coded with <span aria-label="love">&hearts;</span> by
+      <div class="site-footer__inner">
+        <div>
+          <p class="site-footer__brand">Cuorpugnale</p>
+          <p>Un podcast actual play di Walid Husein e Gianluca Danaro</p>
+        </div>
+        <nav class="site-footer__links" aria-label="Canali di Cuorpugnale">
+          <a href="{{.SpotifyURL}}" target="_blank" rel="noopener">Spotify</a>
+          <a href="{{.YouTubeURL}}" target="_blank" rel="noopener">YouTube</a>
+          <a href="{{.InstagramURL}}" target="_blank" rel="noopener"
+            >Instagram</a
+          >
+        </nav>
+      </div>
+      <p class="site-footer__credit">
+        coded with <span aria-label="amore">&hearts;</span> by
         <a
           href="https://github.com/emiliopalmerini"
           target="_blank"

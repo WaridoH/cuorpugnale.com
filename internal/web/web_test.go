@@ -5,7 +5,6 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
-	"time"
 )
 
 func TestHomePageRendersSocialLinks(t *testing.T) {
@@ -17,6 +16,7 @@ func TestHomePageRendersSocialLinks(t *testing.T) {
 
 	body := rec.Body.String()
 	for _, link := range []string{
+		defaultSpotifyURL,
 		"https://youtube.com/@cuorpugnale?si=GMnp_eG1ujakmclG",
 		"https://www.instagram.com/cuorpugnale",
 	} {
@@ -24,8 +24,50 @@ func TestHomePageRendersSocialLinks(t *testing.T) {
 			t.Errorf("home page does not contain %q", link)
 		}
 	}
-	if strings.Contains(body, `>Spotify</a>`) {
-		t.Errorf("home page contains Spotify social link, want YouTube")
+}
+
+func TestHomePageRendersCampaignLedStructure(t *testing.T) {
+	rec := renderHome(t)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", rec.Code, http.StatusOK)
+	}
+
+	body := strings.Join(strings.Fields(rec.Body.String()), " ")
+	for _, snippet := range []string{
+		`<main id="contenuto">`,
+		`<nav class="site-nav" aria-label="Navigazione principale">`,
+		`href="#avventura"`,
+		`href="#party"`,
+		`href="#ascolta"`,
+		`href="#chi-siamo"`,
+		`<section class="campaign-hero" aria-labelledby="page-title">`,
+		`<span>Dimora</span> Age of Umbra`,
+		`class="placeholder-label">Sinossi in arrivo</span>`,
+		`class="placeholder-label">Schede in arrivo</span>`,
+		`class="party__gallery"`,
+	} {
+		if !strings.Contains(body, snippet) {
+			t.Errorf("home page does not contain %q", snippet)
+		}
+	}
+	for _, blocked := range []string{
+		`class="credits"`,
+		`Ogni storia ha molte mani`,
+		`story-panel__number`,
+		`party__grid`,
+		`Personaggio 04`,
+		`aria-hidden="true">I</div>`,
+		`aria-hidden="true">II</div>`,
+		`aria-hidden="true">III</div>`,
+		`aria-hidden="true">IV</div>`,
+	} {
+		if strings.Contains(body, blocked) {
+			t.Errorf("home page contains removed content %q", blocked)
+		}
+	}
+	if got := strings.Count(body, `<article class="character-card">`); got != 3 {
+		t.Errorf("character card count = %d, want 3", got)
 	}
 }
 
@@ -100,7 +142,7 @@ func TestHomePageCanOverrideSpotifyLink(t *testing.T) {
 	}
 }
 
-func TestHomePageUsesOptimizedHeroImage(t *testing.T) {
+func TestHomePageUsesResponsiveCampaignArtwork(t *testing.T) {
 	rec := renderHome(t)
 
 	if rec.Code != http.StatusOK {
@@ -111,15 +153,18 @@ func TestHomePageUsesOptimizedHeroImage(t *testing.T) {
 	for _, snippet := range []string{
 		`rel="preload"`,
 		`as="image"`,
-		`href="/static/img/cuorpugnale_logotipo-960.avif"`,
-		`imagesizes="(max-width: 956px) 92vw, 880px"`,
-		`<picture class="hero__brand-picture">`,
+		`href="/static/img/campaign/age-of-umbra-1920.avif"`,
+		`imagesizes="100vw"`,
+		`<picture class="campaign-hero__artwork">`,
 		`type="image/avif"`,
-		`/static/img/cuorpugnale_logotipo-640.avif 640w`,
-		`/static/img/cuorpugnale_logotipo-960.webp 960w`,
-		`src="/static/img/cuorpugnale_logotipo-960.jpg"`,
-		`width="960"`,
-		`height="414"`,
+		`/static/img/campaign/age-of-umbra-960.avif 960w`,
+		`/static/img/campaign/age-of-umbra-2560.avif 2560w`,
+		`src="/static/img/campaign/age-of-umbra-1920.jpg"`,
+		`alt="Il party di Dimora: Age of Umbra davanti alla città nella nebbia"`,
+		`width="1920"`,
+		`height="1080"`,
+		`property="og:image" content="https://cuorpugnale.com/static/img/campaign/age-of-umbra-1920.jpg"`,
+		`<link rel="stylesheet" href="/static/css/age-of-umbra-v1.css" />`,
 	} {
 		if !strings.Contains(body, snippet) {
 			t.Errorf("home page does not contain %q", snippet)
@@ -127,9 +172,7 @@ func TestHomePageUsesOptimizedHeroImage(t *testing.T) {
 	}
 }
 
-func TestHomePageShowsCountdownBeforeLaunch(t *testing.T) {
-	t.Setenv("TRAILER_LAUNCH_DELAY", "10s")
-
+func TestHomePagePrioritizesListening(t *testing.T) {
 	rec := renderHome(t)
 
 	if rec.Code != http.StatusOK {
@@ -138,35 +181,13 @@ func TestHomePageShowsCountdownBeforeLaunch(t *testing.T) {
 
 	body := rec.Body.String()
 	for _, snippet := range []string{
-		`class="countdown"`,
-		`Il teaser trailer arriva tra`,
-		`data-target="`,
-	} {
-		if !strings.Contains(body, snippet) {
-			t.Errorf("home page does not contain %q", snippet)
-		}
-	}
-	if strings.Contains(body, `class="hero__video"`) {
-		t.Errorf("home page contains launched YouTube embed during countdown")
-	}
-}
-
-func TestHomePageEmbedsSpotifyShowAfterLaunch(t *testing.T) {
-	t.Setenv("TRAILER_LAUNCH_AT", time.Now().Add(-time.Hour).Format(time.RFC3339))
-
-	rec := renderHome(t)
-
-	if rec.Code != http.StatusOK {
-		t.Fatalf("status = %d, want %d", rec.Code, http.StatusOK)
-	}
-
-	body := rec.Body.String()
-	for _, snippet := range []string{
+		`<section class="listen" id="ascolta" aria-labelledby="listen-title">`,
+		`href="#ascolta"`,
+		`Ascolta ora`,
 		`data-testid="embed-iframe"`,
-		`class="hero__spotify"`,
+		`class="listen__spotify"`,
+		`title="Dimora: Age of Umbra su Spotify"`,
 		`src="https://open.spotify.com/embed/show/033nh6SpB5aFTDuQ6FMkSI?utm_source=generator"`,
-		`height="352"`,
-		`allowfullscreen`,
 		`allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"`,
 	} {
 		if !strings.Contains(body, snippet) {
@@ -175,31 +196,7 @@ func TestHomePageEmbedsSpotifyShowAfterLaunch(t *testing.T) {
 	}
 }
 
-func TestTrailerLaunchTimeCanUseAbsoluteOverride(t *testing.T) {
-	now := time.Date(2026, 5, 26, 8, 0, 0, 0, time.UTC)
-	want := time.Date(2026, 5, 26, 10, 15, 0, 0, time.UTC)
-	t.Setenv("TRAILER_LAUNCH_AT", want.Format(time.RFC3339))
-
-	got := trailerLaunchTime(now)
-
-	if !got.Equal(want) {
-		t.Fatalf("trailerLaunchTime() = %v, want %v", got, want)
-	}
-}
-
-func TestTrailerLaunchTimeCanUseDelayOverride(t *testing.T) {
-	now := time.Date(2026, 5, 26, 8, 0, 0, 0, time.UTC)
-	t.Setenv("TRAILER_LAUNCH_DELAY", "10s")
-
-	got := trailerLaunchTime(now)
-	want := now.Add(10 * time.Second)
-
-	if !got.Equal(want) {
-		t.Fatalf("trailerLaunchTime() = %v, want %v", got, want)
-	}
-}
-
-func TestOptimizedHeroAssetsAreServed(t *testing.T) {
+func TestCampaignAssetsAreServed(t *testing.T) {
 	server, err := New()
 	if err != nil {
 		t.Fatalf("New() error = %v", err)
@@ -207,11 +204,11 @@ func TestOptimizedHeroAssetsAreServed(t *testing.T) {
 
 	handler := server.Handler()
 	for _, path := range []string{
-		"/static/img/cuorpugnale_logotipo-640.avif",
-		"/static/img/cuorpugnale_logotipo-960.avif",
-		"/static/img/cuorpugnale_logotipo-640.webp",
-		"/static/img/cuorpugnale_logotipo-960.webp",
-		"/static/img/cuorpugnale_logotipo-960.jpg",
+		"/static/css/age-of-umbra-v1.css",
+		"/static/img/campaign/age-of-umbra-960.avif",
+		"/static/img/campaign/age-of-umbra-1920.avif",
+		"/static/img/campaign/age-of-umbra-2560.avif",
+		"/static/img/campaign/age-of-umbra-1920.jpg",
 	} {
 		req := httptest.NewRequest(http.MethodGet, path, nil)
 		rec := httptest.NewRecorder()
@@ -223,6 +220,34 @@ func TestOptimizedHeroAssetsAreServed(t *testing.T) {
 		}
 		if cacheControl := rec.Header().Get("Cache-Control"); !strings.Contains(cacheControl, "immutable") {
 			t.Errorf("%s Cache-Control = %q, want immutable static cache", path, cacheControl)
+		}
+	}
+}
+
+func TestCampaignStylesIncludeGalleryAndColorPortraitInteraction(t *testing.T) {
+	server, err := New()
+	if err != nil {
+		t.Fatalf("New() error = %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodGet, "/static/css/age-of-umbra-v1.css", nil)
+	rec := httptest.NewRecorder()
+
+	server.Handler().ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", rec.Code, http.StatusOK)
+	}
+	for _, snippet := range []string{
+		`.party__gallery {`,
+		`overflow-x: auto;`,
+		`scroll-snap-type: x mandatory;`,
+		`.person:hover .person__photo,`,
+		`.person:focus-within .person__photo {`,
+		`filter: grayscale(0);`,
+	} {
+		if !strings.Contains(rec.Body.String(), snippet) {
+			t.Errorf("campaign stylesheet does not contain %q", snippet)
 		}
 	}
 }
@@ -289,6 +314,22 @@ func TestSecurityPolicyDoesNotAllowExternalFonts(t *testing.T) {
 		if strings.Contains(csp, blocked) {
 			t.Errorf("Content-Security-Policy contains external font source %q", blocked)
 		}
+	}
+}
+
+func TestSecurityPolicyDoesNotAllowInlineScripts(t *testing.T) {
+	server, err := New()
+	if err != nil {
+		t.Fatalf("New() error = %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	rec := httptest.NewRecorder()
+
+	server.Handler().ServeHTTP(rec, req)
+
+	if csp := rec.Header().Get("Content-Security-Policy"); strings.Contains(csp, "'unsafe-inline'") {
+		t.Errorf("Content-Security-Policy still allows inline scripts: %q", csp)
 	}
 }
 
